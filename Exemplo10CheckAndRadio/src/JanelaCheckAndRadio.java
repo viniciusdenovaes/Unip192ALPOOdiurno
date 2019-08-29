@@ -6,50 +6,79 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 public class JanelaCheckAndRadio extends JFrame {
 	
-	JPanel panel;
-	JTextField textField;
-	JLabel label;
+	JCheckBox[] checkDisciplina = new JCheckBox[3];
+	JRadioButton[] radioPeriodo = new JRadioButton[3];
+	JRadioButton[] radioSemestre = new JRadioButton[3];
 	
 	public JanelaCheckAndRadio() {
 		setLayout(new FlowLayout());
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		panel = new JPanel();
-		panel.setLayout(new GridLayout(2, 1));
-		panel.setBackground(Color.CYAN);
-		add(panel);
+		JPanel panelDisciplina = new JPanel();
+		add(panelDisciplina);
+		panelDisciplina.setLayout(
+				new GridLayout(checkDisciplina.length, 1));
 		
-		textField = new JTextField(10);
-		panel.add(textField);
-		textField.addActionListener(new ComportamentoTextField());
+		checkDisciplina[0] = new JCheckBox("Java");
+		checkDisciplina[1] = new JCheckBox("A.I.");
+		checkDisciplina[2] = new JCheckBox("C");
 		
-		label = new JLabel("Escreva no textfield");
-		label.setFont(new Font("Sans Seriff", Font.BOLD, 16));
-		panel.add(label);
+		for(JCheckBox check : checkDisciplina) {
+			panelDisciplina.add(check);
+			check.addActionListener(new ComportamentoBotoes());
+		}
+		
+		JPanel panelPeriodo = new JPanel();
+		add(panelPeriodo);
+		panelPeriodo.setLayout(
+				new GridLayout(radioPeriodo.length, 1));
+		
+		radioPeriodo[0] = new JRadioButton("Manhã");
+		radioPeriodo[1] = new JRadioButton("Tarde");
+		radioPeriodo[2] = new JRadioButton("Noite");
+		
+		ButtonGroup buttonGroupPeriodo = new ButtonGroup();
+		
+		for(JRadioButton radio : radioPeriodo) {
+			buttonGroupPeriodo.add(radio);
+			panelPeriodo.add(radio);
+			radio.addActionListener(new ComportamentoBotoes());
+		}
+		
+		
 		
 		
 		pack();
 	}
 	
-	class ComportamentoTextField implements ActionListener {
+	class ComportamentoBotoes implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			label.setText(textField.getText());
-			textField.setText("");
+			for(JCheckBox check : checkDisciplina)
+				if(check.isSelected())
+					System.out.println(
+							"Materia " + check.getText());
+			for(JRadioButton radio : radioPeriodo) 
+				if(radio.isSelected())
+					System.out.println(
+							"Turno " + radio.getText());
+			System.out.println();
 		}
 		
 	}
-	
 	
 
 }
