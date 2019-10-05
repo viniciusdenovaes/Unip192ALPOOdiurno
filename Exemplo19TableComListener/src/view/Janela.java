@@ -1,8 +1,10 @@
+package view;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.TextField;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -11,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import model.Aluno;
 
 public class Janela extends JFrame{
 	
@@ -23,6 +27,8 @@ public class Janela extends JFrame{
 	
 	DefaultTableModel dtm;
 	JTable tabela;
+	JScrollPane scrollPane;
+	JButton botaoMostrar = new JButton("Mostrar");
 
 	
 	public Janela() {
@@ -36,11 +42,24 @@ public class Janela extends JFrame{
 		panelBusca.add(botaoBusca);
 		add(panelBusca, BorderLayout.PAGE_START);
 		
+		JPanel panelTabela = new JPanel();
+		panelTabela.setLayout(new BorderLayout(5, 5));
 		Object[][] data = new Object[0][2];
 		Object[] colNames = {"ra", "nome"};
 		dtm = new DefaultTableModel(data, colNames);
-		tabela = new JTable(dtm);
-		JScrollPane panelTabela = new JScrollPane(tabela);
+		
+		tabela = new JTable(dtm) {
+		@Override
+		public boolean isCellEditable(int row, int col){
+			return false;
+		}
+	};
+	
+		scrollPane = new JScrollPane(tabela);
+		panelTabela.add(scrollPane, BorderLayout.CENTER);
+		JPanel panelBotaoMostrar = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+		panelBotaoMostrar.add(botaoMostrar);
+		panelTabela.add(panelBotaoMostrar, BorderLayout.PAGE_END);
 		add(panelTabela, BorderLayout.CENTER);
 		
 		JPanel panelAdiciona = new JPanel();
@@ -67,8 +86,8 @@ public class Janela extends JFrame{
 		dtm.setRowCount(0);
 		for(Aluno aluno : alunos) {
 			Object[] rowData = new Object[2];
-			rowData[0] = aluno.ra;
-			rowData[1] = aluno.nome;
+			rowData[0] = aluno.getRa();
+			rowData[1] = aluno.getNome();
 			dtm.addRow(rowData);
 			System.out.println(aluno);
 		}
@@ -96,6 +115,27 @@ public class Janela extends JFrame{
 	
 	public void adicionaComportamentoAdd(ActionListener al) {
 		botaoAdd.addActionListener(al);
+	}
+	
+	public Aluno getAlunoSelecionado() {
+		int linhaSelecionada = tabela.getSelectedRow();
+		String ra = (String) dtm.getValueAt(linhaSelecionada, 0);
+		String nome = (String) dtm.getValueAt(linhaSelecionada, 1);
+		Aluno aluno = new Aluno(ra, nome);
+		return aluno;
+	}
+	
+	public void mostrarAlunoSelecionado(Aluno aluno) {
+		System.out.println("\nAluno Selecionado:");
+		System.out.println(aluno + "\n");
+	}
+	
+	public void adicionaComportamentoMostrar(ActionListener al) {
+		botaoMostrar.addActionListener(al);
+	}
+	
+	public void adicionaComportamentoMostrarComMouse(MouseListener ml) {
+		tabela.addMouseListener(ml);
 	}
 	
 
