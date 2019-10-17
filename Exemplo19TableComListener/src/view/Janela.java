@@ -5,10 +5,14 @@ import java.awt.GridLayout;
 import java.awt.TextField;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -126,6 +130,46 @@ public class Janela extends JFrame{
 	}
 	
 	public void mostrarAlunoSelecionado(Aluno aluno) {
+		JFrame janelaMostrar = new JFrame("dados do aluno");
+		janelaMostrar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		janelaMostrar.setVisible(true);
+		janelaMostrar.setLayout(
+				new BoxLayout(
+						janelaMostrar.getContentPane(), BoxLayout.PAGE_AXIS));
+		janelaMostrar.add(new JLabel(aluno.getRa()));
+		janelaMostrar.add(new JLabel(aluno.getNome()));
+		janelaMostrar.setSize(200,200);
+		janelaMostrar.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				janelaMostrar.dispose();
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+			}
+		});
 		System.out.println("\nAluno Selecionado:");
 		System.out.println(aluno + "\n");
 	}
