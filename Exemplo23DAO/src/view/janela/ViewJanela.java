@@ -3,7 +3,10 @@ package view.janela;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -22,24 +25,11 @@ import view.View;
 
 public class ViewJanela extends JFrame implements View {
 	
-	JButton botaoBuscarAluno = new JButton("Buscar Aluno");
-	JButton botaoAddAluno = new JButton("Adicionar Aluno");
-	JTextField fieldNomeAluno = new JTextField(5);
-	JTextField fieldRaAluno = new JTextField(5);
-	DefaultTableModel dtmAlunos;
-	
-	
-	JButton botaoBuscarCurso = new JButton("Buscar Curso");
-	JButton botaoAddCurso = new JButton("Adicionar Curso");
-	JTextField fieldNomeCurso = new JTextField(5);
-	DefaultTableModel dtmCursos;
+	PanelAlunos panelAlunos;
+	PanelCursos panelCursos;
+	PanelMostrarCadastro panelMostrarCadastro;
 	
 	JButton botaoCadastraCurso = new JButton("Cadastar Curso");
-//	String getRaCadastro();
-//	String getCursoCadastro();
-	
-	JButton botaoMostrarAluno = new JButton("Mostrar Aluno");
-	
 	
 	public ViewJanela() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,53 +43,20 @@ public class ViewJanela extends JFrame implements View {
 				new BoxLayout(panelTabelas, BoxLayout.LINE_AXIS));
 		
 		
-		JPanel panelAlunos = new JPanel();
+		panelAlunos = new PanelAlunos();
 		panelTabelas.add(panelAlunos);
-		panelAlunos.setLayout(
-				new BoxLayout(panelAlunos, BoxLayout.PAGE_AXIS));
-		Object[][] dataAlunos = new Object[0][2];
-		Object[] colNamesAlunos = {"ra", "nome"};
-		dtmAlunos = new DefaultTableModel(dataAlunos, colNamesAlunos);
-		JTable tabelaAlunos = new JTable(dtmAlunos);
-		JScrollPane panelTabelaAlunos = new JScrollPane(tabelaAlunos);
-		panelAlunos.add(panelTabelaAlunos);
-		JPanel panelControleAlunos = new JPanel();
-		panelAlunos.add(panelControleAlunos);
-		panelControleAlunos.setLayout(new GridLayout(2, 3, 5, 5));
-		panelControleAlunos.add(new JLabel("ra"));
-		panelControleAlunos.add(fieldRaAluno);
-		panelControleAlunos.add(botaoBuscarAluno);
-		panelControleAlunos.add(new JLabel("nome"));
-		panelControleAlunos.add(fieldNomeAluno);
-		panelControleAlunos.add(botaoAddAluno);
+		panelAlunos.getTabela().addMouseListener(new ComportamentoMostrarCadastro());
 		
-		JPanel panelCursos = new JPanel();
+		panelCursos = new PanelCursos();
 		panelTabelas.add(panelCursos);
-		panelCursos.setLayout(
-				new BoxLayout(panelCursos, BoxLayout.PAGE_AXIS));
-		Object[][] dataCursos = new Object[0][1];
-		Object[] colNamesCursos = {"nome"};
-		dtmCursos = new DefaultTableModel(dataCursos, colNamesCursos);
-		JTable tabelaCursos = new JTable(dtmCursos);
-		JScrollPane panelTabelaCursos = new JScrollPane(tabelaCursos);
-		panelCursos.add(panelTabelaCursos);
-		JPanel panelControleCursos = new JPanel();
-		panelCursos.add(panelControleCursos);
-		panelControleCursos.setLayout(new GridLayout(2, 3, 5, 5));
-		panelControleCursos.add(new JLabel("nome"));
-		panelControleCursos.add(fieldNomeCurso);
-		panelControleCursos.add(botaoBuscarCurso);
-		panelControleCursos.add(new JLabel(" "));
-		panelControleCursos.add(new JLabel(" "));
-		panelControleCursos.add(botaoAddCurso);
 		
-		
+		panelMostrarCadastro = new PanelMostrarCadastro();
+		panelTabelas.add(panelMostrarCadastro);
 		
 		JPanel panelBotaoCadastros = new JPanel();
 		add(panelBotaoCadastros, BorderLayout.PAGE_END);
 		panelBotaoCadastros.setLayout(
 				new FlowLayout(FlowLayout.TRAILING, 10, 10));
-		panelBotaoCadastros.add(botaoMostrarAluno);
 		panelBotaoCadastros.add(botaoCadastraCurso);
 		
 		
@@ -109,63 +66,47 @@ public class ViewJanela extends JFrame implements View {
 
 	@Override
 	public void addComportamentoBuscaAlunos(ActionListener al) {
-		botaoBuscarAluno.addActionListener(al);
+		panelAlunos.addComportamentoBusca(al);
 	}
 
 	@Override
 	public void addComportamentoAddAluno(ActionListener al) {
-		botaoAddAluno.addActionListener(al);
+		panelAlunos.addComportamentoAdd(al);
 	}
 
 	@Override
 	public String getNomeAluno() {
-		return fieldNomeAluno.getText();
+		return panelAlunos.getNome();
 	}
 
 	@Override
 	public String getRaAluno() {
-		return fieldRaAluno.getText();
+		return panelAlunos.getRa();
 	}
 
 	@Override
 	public void mostrarAlunos(List<Cadastro> alunos) {
-		dtmAlunos.setNumRows(0);
-		for(Cadastro cadastro : alunos) {
-			Object[] data = new Object[3];
-			data[0] = cadastro.getAluno().getRa();
-			data[1] = cadastro.getAluno().getNome();
-			String cursos = "";
-			for(Curso curso : cadastro.getCursos()) {
-				cursos += curso.getNome() + "; ";
-			}
-			data[2] = cursos;
-			dtmAlunos.addRow(data);
-		}
+		panelAlunos.mostrar(alunos);
 	}
 
 	@Override
 	public void addComportamentoAddCurso(ActionListener al) {
-		botaoAddCurso.addActionListener(al);
+		panelCursos.addComportamentoAdd(al);
 	}
 
 	@Override
 	public void addComportamentoBuscaCurso(ActionListener al) {
-		botaoBuscarCurso.addActionListener(al);
+		panelCursos.addComportamentoBusca(al);
 	}
 
 	@Override
 	public String getNomeCurso() {
-		return fieldNomeCurso.getText();
+		return panelCursos.getNome();
 	}
 
 	@Override
 	public void mostrarCursos(List<Curso> cursos) {
-		dtmCursos.setNumRows(0);
-		for(Curso curso : cursos) {
-			Object[] data = new Object[1];
-			data[0] = curso.getNome();
-			dtmCursos.addRow(data);
-		}
+		panelCursos.mostrar(cursos);
 	}
 
 	@Override
@@ -175,12 +116,61 @@ public class ViewJanela extends JFrame implements View {
 
 	@Override
 	public String getRaCadastro() {
-		return null;
+		JTable tabela = panelAlunos.getTabela();
+		int linha = tabela.getSelectedRow();
+		DefaultTableModel dtm = panelAlunos.getDtm();
+		return dtm.getValueAt(linha, 0).toString();
+		
 	}
 
 	@Override
 	public String getCursoCadastro() {
-		// TODO Auto-generated method stub
-		return null;
+		JTable tabela = panelCursos.getTabela();
+		int linha = tabela.getSelectedRow();
+		DefaultTableModel dtm = panelCursos.getDtm();
+		return dtm.getValueAt(linha, 0).toString();
 	}
+	
+	class ComportamentoMostrarCadastro 
+	implements MouseListener {
+		
+		public void acao() {
+			JTable tabela = panelAlunos.getTabela();
+			int linha = tabela.getSelectedRow();
+			DefaultTableModel dtm = panelAlunos.getDtm();
+			Cadastro cadastro = (Cadastro)dtm.getValueAt(linha, 0);
+			panelMostrarCadastro.atualizaCadastro(cadastro);
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			acao();
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+	}
+	
 }

@@ -23,13 +23,7 @@ public class Cadastro {
 	}
 	@Override
 	public String toString() {
-		String res = "";
-		res += "Cadastro: " + aluno + "\n";
-		for(Curso curso : cursos) {
-			res += curso + "\n";
-		}
-		res += "\n";
-		return res;
+		return aluno.getRa();
 	}
 	
 	

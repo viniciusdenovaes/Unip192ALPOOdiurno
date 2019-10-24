@@ -18,6 +18,10 @@ public class Controller {
 	public Controller(Dao dao, View view) {
 		this.dao = dao;
 		this.view = view;
+		
+		view.addComportamentoBuscaAlunos(new ComportamentoBuscaAluno());
+		view.addComportamentoBuscaCurso(new ComportamentoBuscaCurso());
+		view.addComportamentoCadastrarCurso(new ComportamentoCadastraCurso());
 	}
 	
 	class ComportamentoBuscaAluno implements ActionListener{
